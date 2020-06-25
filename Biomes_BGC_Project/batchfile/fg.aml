@@ -1,0 +1,13 @@
+&wo E:\reanalyses_clmdata\data\grid_40km\rhum\2003
+&s total = [filelist * cover1 -grid]
+&s unit = [open cover1 ok -read]
+	&do i = 1 &to %total%
+&s element = [read %unit% ok]
+
+		E:\Ye_data\Temp\%element% = resample(%element%, 8000.0, nearest)
+    E:\chenyaoliang\Meteo_data\rhum_8km_dbin\%element% = gridfloat(E:\Ye_data\Temp\%element%)
+	&end
+
+
+
+	

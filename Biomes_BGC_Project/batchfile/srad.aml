@@ -1,0 +1,8 @@
+&do year = 1969 &to 1978
+grid
+&if ^ [exist E:\data\ca40k\climate\grid\srad2\y%year% -directory] &then &sys md E:\data\ca40k\climate\grid\srad2\y%year% 
+&do day = 1 &to 365
+ E:\data\ca40k\climate\grid\srad2\y%year%\y%year%d%day% = con(E:\data\ca40k\climate\grid\srad\y%year%\y%year%d%day% < 0,1,E:\data\ca40k\climate\grid\srad\y%year%\y%year%d%day%)
+ &end
+ q
+ &end

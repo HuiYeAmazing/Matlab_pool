@@ -1,0 +1,77 @@
+/* Calculate detrended climate data ("byear - span" to "byear - 1")
+/* Notice: The unit of mean and residue grids (under the %outdir%\detrend\ directory) is 100 * unit of input grids, while the unit of output grids is same to the unit of input grids.
+
+/* Constants
+&sv outdir = E:\data\ca40k\climate	
+&sv indir = E:\data\ca40k\climate	
+&sv byear := 1979	/* begin year of reference dataset
+&sv span := 10.0	
+&sv eyear := %byear% + %span% - 1	/* end year of reference dataset
+
+&if ^ [exist tmpdir -directory] &then &sys md tmpdir	
+w tmpdir
+
+&do clm &list prec rads rhum tavg tmax tmin 	
+	&do day = 1 &to 365 &by 1
+	&type detrend-%clm%-day%day%
+	&if [exist %indir%\%clm%\%byear%\%clm%_%byear%d%day% -grid] &then
+ 		&do  			 
+			grid
+			setwindow %indir%\%clm%\%byear%\%clm%_%byear%d%day%	
+			setmask %indir%\%clm%\%byear%\%clm%_%byear%d%day%		
+			setcell %indir%\%clm%\%byear%\%clm%_%byear%d%day%		
+
+			&if [exist sgmaxy -grid] &then kill sgmaxy all
+			&if [exist sgmay -grid] &then kill sgmay all
+	
+			sgmaxy = 0.0
+			sgmay = 0.0
+			&sv sgmax = 0.0
+			&sv sgmax2 = 0.0			
+
+			&do year = %byear% &to %eyear% &by 1	/* 1st loop calculate the parameters and mean
+				&if [exist tempgrid -grid] &then kill tempgrid all
+				&sv xvtest = %year% - %byear%
+				&sv sgmax = %sgmax% + %xvtest%
+				tempgrid = sgmaxy + %xvtest% * %indir%\%clm%\%year%\%clm%_%year%d%day% * 100	
+				kill sgmaxy all
+				rename tempgrid sgmaxy
+				
+				tempgrid = sgmay + %indir%\%clm%\%year%\%clm%_%year%d%day% * 100		
+				kill sgmay all
+				rename tempgrid sgmay
+				&sv sgmax2 = %sgmax2% + %xvtest% * %xvtest% 
+			&end
+			&if [exist m -grid] &then kill m all
+			&if [exist b -grid] &then kill b all
+
+			m = ( %span% * sgmaxy - %sgmax% * sgmay ) / ( %span% * %sgmax2% - %sgmax% * %sgmax%)
+			b = ( sgmay - m * %sgmax% ) / %span%
+			
+			/* calculate mean grid
+			&if ^ [exist %outdir%\%clm%\detrend\mean -directory] &then &sys md %outdir%\%clm%\detrend\mean 
+			&if [exist %outdir%\%clm%\detrend\mean\d%day% -grid] &then kill %outdir%\%clm%\detrend\mean\d%day% all
+			%outdir%\%clm%\detrend\mean\d%day% = int(sgmay / %span%)			
+
+			&do year = %byear% &to %eyear% &by 1	/* 2nd loop calculate the residue for each of the same day in different years; then detrend the grids by adding residue to mean
+				&sv outyear = %year% - %span%	
+				&if ^ [exist %outdir%\%clm%\detrend\residue\y%year% -directory] &then &sys md %outdir%\%clm%\detrend\residue\y%year%
+				&if ^ [exist %outdir%\%clm%\y%outyear% -directory] &then &sys md %outdir%\%clm%\y%outyear%	
+				&if [exist %outdir%\%clm%\detrend\residue\y%year%\y%year%d%day% -grid] &then kill %outdir%\%clm%\detrend\residue\y%year%\y%year%d%day% all
+				&if [exist %outdir%\%clm%\y%outyear%\y%outyear%d%day% -grid] &then kill %outdir%\%clm%\y%outyear%\y%outyear%d%day% all	
+				&if [exist tempgrid -grid] &then kill tempgrid all
+				
+				%outdir%\%clm%\detrend\residue\y%year%\y%year%d%day% = int(%indir%\%clm%\%year%\%clm%_%year%d%day% * 100 - m * ( %year% - %byear% ) - b )					
+				tempgrid = %outdir%\%clm%\detrend\residue\y%year%\y%year%d%day% + %outdir%\%clm%\detrend\mean\d%day%
+				&if %clm% EQ prec OR %clm% EQ srad &then 
+					%outdir%\%clm%\y%outyear%\y%outyear%d%day% = float(con(tempgrid < 0, 0, tempgrid) * 0.01)	
+				&else &if %clm% EQ rhum &then 
+					%outdir%\%clm%\y%outyear%\y%outyear%d%day% = float(con(tempgrid < 0, 0, con(tempgrid > 100, 100, tempgrid)) * 0.01)
+				&else
+					%outdir%\%clm%\y%outyear%\y%outyear%d%day% = float(tempgrid * 0.01)
+			&end
+			q 
+		&end  	
+	&end
+&end	
+w ..

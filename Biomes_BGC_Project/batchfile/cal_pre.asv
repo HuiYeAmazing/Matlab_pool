@@ -1,0 +1,64 @@
+close all
+clear all
+clc
+
+in_way = 'E:\\Ye_data\\BGC_input\\Meteo\prec';
+output_way = 'E:\\Ye_data\\BGC_input\\meteo\\prec';
+
+
+
+%输入行列号
+nrow = 313;
+ncolumn = 424;
+S = [ncolumn nrow];
+
+
+
+fmask = sprintf('%s\\%s','E:\Ye_data\BGC_input\ADD_var','mask.grd');
+ftp0 = fopen(fmask, 'r');
+mask = fread(ftp0, S, 'float32');
+fclose(ftp0);
+mask = mask';
+
+%读入模型输出文件
+list = dir('E:\\Ye_data\\BGC_input\\meteo\\prec\pre_d*.grd');
+ff_m = list(1).name;
+ftp_m = sprintf('%s\\%s',inway,ff_m);
+fmask = textread(ftp_m);
+[m n] = size(fmask);
+clear ff_m ftp_m fmask;
+yrs = m / 365;
+    for  nday= 1:365
+        for nx = 1:313
+%         for nx = 1:150
+
+                 for ny = 1:ncolumn
+                    if mask(nx,ny) ~= -9999;
+%                     if ((x1(nx,ny) == -9999) || (x2(nx,ny) == -9999) || (x3(nx,ny) == -9999) || (x4(nx,ny) == -9999) ...
+%                     || (x5(nx,ny) == -9999) || (x6(nx,ny) == -9999) || (x7(nx,ny) == -9999) || mask(nx,ny) == -9999)...
+%                      == 0;
+            %         if exist(sprintf('%s\\%d', output_way,nx), 'dir') == 0
+            %         mkdir(sprintf('%s\\%d', output_way,nx))
+            %         end
+                    A = ['2003',' ',num2str(nday),' ',num2str(x1(nx,ny)),' ',num2str(x2(nx,ny))...
+                        ,' ',num2str(x3(nx,ny)),' ',num2str(x4(nx,ny))...
+                        ,' ',num2str(x5(nx,ny)),' ',num2str(x6(nx,ny))...
+                        ,' ',num2str(x7(nx,ny))];
+            %         A = [2003,nday,num2str(x1(nx,ny)),' ',num2str(x2(nx,ny))...
+            %             ,' ',num2str(x3(nx,ny)),' ',num2str(x4(nx,ny))];
+            
+                    ftxt = sprintf('%s\\%d_%d', output_way,nx,ny);
+                    ftp = fopen(ftxt, 'a');
+                    fprintf(ftp,'%s\r\n',A);
+                    fclose(ftp); 
+                    end
+                 end
+        end
+        clear x1 x2 x3 x4 x5 x6 x7;
+    
+    end
+    
+   clear all;
+% end
+
+       

@@ -1,0 +1,11 @@
+&sv fyear = 1980
+&sv eyear = 1981
+/*&do var &list tmax
+&do var &list prec srad rhum tmax tmin
+&if ^ [exist E:\data\ca40k\climate\annual\%var% -directory] &then &sys md E:\data\ca40k\climate\annual\%var% 
+&do year = %fyear% &to %eyear%
+/*&if [exist E:\data\ca40k\climate\annual\%var%\y%year%.bin -file] &then &sys del E:\data\ca40k\climate\annual\%var%\y%year%.bin
+&sys "E:\data\daily2annual.exe" 100 63 %fyear% %eyear% E:\data\ca40k\climate\bin\%var% E:\data\ca40k\climate\annual\%var%\y
+&end
+&type %var%
+&end

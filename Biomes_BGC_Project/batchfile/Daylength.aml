@@ -1,0 +1,25 @@
+grid
+setcell E:\Ye_data\Temp\rhum_2003d2  
+setwindow E:\Ye_data\Temp\rhum_2003d2 
+&do var &list daylength
+&do year = 1979 &to 2009
+&if ^ [exist E:\Ye_data\BGC_input40km\meteo30yrgrd\%var%\%year% -directory] &then &sys md E:\Ye_data\BGC_input40km\meteo30yrgrd\%var%\%year%
+
+&do i = 1 &to 365
+	&s yy = E:\Ye_data\Temp\lat1 
+
+	&s yy1 = - tan(%yy% * pi / 180) 
+	 tang_d%i% = 2 * pi * (%i% - 1) / 365
+	 decl%i% = 0.006894 - 0.399512 * cos(tang_d%i%) + 0.072075 * sin(tang_d%i%) - 0.006799 * cos(2 * tang_d%i%) + 0.000896 * sin(2 * tang_d%i%) - 0.002689 * cos(3 * tang_d%i%) + 0.001516 * sin(3 * tang_d%i%)
+	 w%i% = acos(%yy1% * tan(decl%i% * pi / 180))
+	 kill tang_d%i% all
+	 kill decl%i% all
+	 E:\Ye_data\BGC_input40km\meteo30yrgrd\%var%\%year%\%var%_%year%d%day% = 2 * w%i% / 15 * (180 / pi) * 3600
+	 
+	 
+	 kill w%i% all
+
+&end
+&end 
+&end	
+q 

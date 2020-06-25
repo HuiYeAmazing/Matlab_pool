@@ -1,0 +1,8 @@
+&wo E:\Ye_data\BGC_input\ADD_var\livestock
+&s total = [filelist *.grd cover -file]
+&s unit = [open cover ok -read]
+	  &do i = 1 &to %total%
+&s element = [read %unit% ok]
+&s item = [before %element% .grd]
+		floatgrid %element% %item%
+		&end

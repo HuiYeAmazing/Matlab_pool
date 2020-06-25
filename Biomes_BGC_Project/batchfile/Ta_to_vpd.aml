@@ -1,0 +1,38 @@
+
+	
+grid
+
+&do j = 1 &to 365
+	&s ta_d = E:\chenyaoliang\Meteo_data\ta_8km_grid\tmean%j%
+	&s rh_d = E:\Ye_data\Temp\rhum_2003d%j%
+	
+		/* 根据温度计算饱和水汽压（公式取对数得到E）, T是绝对热力学温标，T=273.15+ t
+		/* 输入参数 T
+/*setcell = 
+/*setwindow = 
+
+
+		&s Ta = %ta_d% + 273.15  
+		&s C0 = -6.0436117 * 1000
+		&s C1 = 1.89318833 * 10
+		&s C2 = -2.8238594 * 0.01
+		&s C3 = 1.7241129 * 0.00001
+		&s C4 = 2.858487
+		&s T0 = pow(%Ta%, -1)
+		&s T1 = pow(%Ta%, 0)
+		&s T2 = pow(%Ta%, 1)
+		&s T3 = pow(%Ta%, 2)
+		
+		&s sum1 = %C0% * %T0% + %C1% * %T1% + %C2% * %T2% + %C3% * %T3% 
+		 E%j% = exp(%sum1%) + %C4% * ln(%Ta%)
+		
+		E:\chenyaoliang\Meteo_data\VPD_8km_grid\VPD_d%j% = E%j% * (1 - %rh_d%)
+		
+		  &kill E%j% all
+  
+
+&end
+q
+  
+
+

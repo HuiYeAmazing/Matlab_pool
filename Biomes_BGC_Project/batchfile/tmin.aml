@@ -1,0 +1,13 @@
+&wo E:\chenyaoliang\Meteo_data\tmin_8km_dascii
+&s total = [filelist t*.txt cover1 -file]
+&s unit = [open cover1 ok -read]
+	  &do i = 1 &to %total%
+&s element = [read %unit% ok]
+&s item = [before %element% .txt]
+
+		asciigrid %element% E:\chenyaoliang\Meteo_data\temp\%item% float
+		gridclip E:\chenyaoliang\Meteo_data\temp\%item% E:\Ye_data\BGC_input\Meteo\tmin\%item%  -2213293.7782 3589562.82087 1178706.2218 6093562.82087
+		gridfloat E:\Ye_data\BGC_input\Meteo\tmin\%item% E:\Ye_data\BGC_input\Meteo\tmin\%item%.grd
+		kill E:\chenyaoliang\Meteo_data\temp\%item% all	
+		
+		&end

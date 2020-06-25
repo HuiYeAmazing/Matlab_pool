@@ -1,0 +1,12 @@
+&do year = 1979 &to 2008
+grid
+&do var &list prec rads tavg tmax tmin
+&if ^ [exist E:\Ye_data\metdata_30ys\float\%var%\y%year% -directory] &then &sys md E:\Ye_data\metdata_30ys\float\%var%\y%year%
+&do day = 1 &to 365
+
+E:\Ye_data\metdata_30ys\float\%var%\y%year%\%var%_%year%d%day%.bin = gridfloat(E:\reanalyses_clmdata\data\grid_40km\%var%\%year%\%var%_%year%d%day%)
+
+&end
+&end
+q
+&end

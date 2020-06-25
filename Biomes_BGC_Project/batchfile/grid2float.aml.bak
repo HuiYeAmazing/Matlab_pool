@@ -1,0 +1,12 @@
+&do year = 1979 &to 2008
+grid
+&do var &list prec rads tavg tmax tmin
+&if ^ [exist E:\Ye_data\BGC_input\Meteo\annual\%var%\y%year% -directory] &then &sys md E:\Ye_data\BGC_input\Meteo\annual\bin\%var%\y%year%
+&do day = 1 &to 365
+
+E:\Ye_data\BGC_input\Meteo\annual\bin\%var%\y%year%\y%year%d%day%.bin = gridfloat(E:\Ye_data\BGC_input\Meteo\%var%\prec_d%day%)
+
+&end
+&end
+q
+&end

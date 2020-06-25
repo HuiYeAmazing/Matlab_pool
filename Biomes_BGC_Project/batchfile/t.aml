@@ -1,0 +1,12 @@
+&do year = 1969 &to 1978
+grid
+&do var &list rads
+&if ^ [exist E:\data\ca40k\climate\bin\%var%\y%year% -directory] &then &sys md E:\data\ca40k\climate\bin\%var%\y%year%
+&do day = 1 &to 365
+
+E:\data\ca40k\climate\bin\%var%\y%year%\y%year%d%day%.bin = gridfloat(E:\data\ca40k\climate\grid\srad2\y%year%\y%year%d%day%)
+
+&end
+&end
+q
+&end

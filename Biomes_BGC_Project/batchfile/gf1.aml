@@ -1,0 +1,9 @@
+&wo E:\chenyaoliang\Meteo_data\Daylen_8km_grid
+&s total = [filelist * cover -grid]
+&s unit = [open cover ok -read]
+	  &do i = 1 &to %total%
+&s element = [read %unit% ok]
+
+		gridfloat %element% E:\chenyaoliang\Meteo_data\Daylen_8km_dbin\%element%
+		
+		&end

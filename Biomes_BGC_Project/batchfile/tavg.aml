@@ -1,0 +1,6 @@
+grid
+&do var &list clay2 sand2 silt2 
+E:\data\ca40k\inputs\basemaps\%var%.bin = gridfloat(E:\data\ca40k\inputs\basemaps\%var%)
+&end
+q
+

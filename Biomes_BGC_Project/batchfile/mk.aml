@@ -1,0 +1,16 @@
+&sv indir = E:\data\ca40k\climate\raw
+&sv outdir = E:\data\ca40k\climate\grid
+&do var &list srad
+grid
+setwindow E:\data\ca40k\inputs\basemaps\grid\mask
+setmask E:\data\ca40k\inputs\basemaps\grid\mask
+setcell E:\data\ca40k\inputs\basemaps\grid\mask
+
+&do year = 1969 &to 1978
+&if ^ [exist %outdir%\%var%\y%year% -directory] &then &sys md %outdir%\%var%\y%year%
+&do day = 1 &to 365
+%outdir%\%var%\y%year%\y%year%d%day% = %indir%\%var%\y%year%\y%year%d%day%
+&end
+&end
+q
+&end
